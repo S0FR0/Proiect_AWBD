@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista Adrese</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-edit {
+            background-color: #007bff;
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: bold;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .footer-link {
+            margin-top: 20px;
+            display: block;
+        }
+
+        .footer-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .pagination {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .pagination a,
+        .pagination span {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 0 2px;
+            text-decoration: none;
+            border: 1px solid #dee2e6;
+            color: #007bff;
+        }
+
+        .pagination .current {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .pagination .disabled {
+            color: #6c757d;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+
+        .pagination-info {
+            text-align: center;
+            margin: 10px 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .actions {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+<h1>Lista Adrese</h1>
+
+<a href="/addresses/new" class="btn">Adaugă Adresă</a>
+
+<table>
+    <thead>
+    <tr>
+        <th>Strada</th>
+        <th>Oraș</th>
+        <th>Cod Poștal</th>
+        <th>Țară</th>
+        <th>Persoană</th>
+        <th>Acțiuni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="address : ${addresses.content}">
+        <td th:text="${address.street}"></td>
+        <td th:text="${address.city}"></td>
+        <td th:text="${address.postalCode}"></td>
+        <td th:text="${address.country}"></td>
+        <td th:text="${address.person != null ? address.person.firstName + ' ' + address.person.lastName : 'N/A'}"></td>
+        <td class="actions">
+            <a th:href="@{/addresses/{id}/edit(id=${address.id})}" class="btn btn-edit">Editează</a>
+            <form th:action="@{/addresses/{id}/delete(id=${address.id})}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('Sigur vrei să ștergi această adresă?')">
+                    Șterge
+                </button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Paginare -->
+<div class="pagination" th:if="${addresses.totalPages > 1}">
+    <!-- Prima pagină -->
+    <a th:if="${addresses.number > 0}"
+       th:href="@{/addresses(page=0, size=${addresses.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+        ««
+    </a>
+    <span th:if="${addresses.number == 0}" class="disabled">««</span>
+
+    <!-- Pagina anterioară -->
+    <a th:if="${addresses.hasPrevious()}"
+       th:href="@{/addresses(page=${addresses.number - 1}, size=${addresses.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+        ‹
+    </a>
+    <span th:if="${!addresses.hasPrevious()}" class="disabled">‹</span>
+
+    <!-- Numerele paginilor -->
+    <th:block th:with="startPage=${addresses.number > 2 ? addresses.number - 2 : 0},
+                           endPage=${addresses.number + 2 < addresses.totalPages - 1 ? addresses.number + 2 : addresses.totalPages - 1}">
+
+        <a th:if="${startPage > 0}"
+           th:href="@{/addresses(page=0, size=${addresses.size}, sortBy=${sortBy}, sortDir=${sortDir})}"
+           th:text="1"></a>
+
+        <span th:if="${startPage > 1}">...</span>
+
+        <th:block th:each="i : ${#numbers.sequence(startPage, endPage)}">
+            <a th:if="${i != addresses.number}"
+               th:href="@{/addresses(page=${i}, size=${addresses.size}, sortBy=${sortBy}, sortDir=${sortDir})}"
+               th:text="${i + 1}"></a>
+            <span th:if="${i == addresses.number}" class="current" th:text="${i + 1}"></span>
+        </th:block>
+
+        <span th:if="${endPage < addresses.totalPages - 2}">...</span>
+
+        <a th:if="${endPage < addresses.totalPages - 1}"
+           th:href="@{/addresses(page=${addresses.totalPages - 1}, size=${addresses.size}, sortBy=${sortBy}, sortDir=${sortDir})}"
+           th:text="${addresses.totalPages}"></a>
+    </th:block>
+
+    <!-- Pagina următoare -->
+    <a th:if="${addresses.hasNext()}"
+       th:href="@{/addresses(page=${addresses.number + 1}, size=${addresses.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+        ›
+    </a>
+    <span th:if="${!addresses.hasNext()}" class="disabled">›</span>
+
+    <!-- Ultima pagină -->
+    <a th:if="${addresses.number < addresses.totalPages - 1}"
+       th:href="@{/addresses(page=${addresses.totalPages - 1}, size=${addresses.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+        »»
+    </a>
+    <span th:if="${addresses.number == addresses.totalPages - 1}" class="disabled">»»</span>
+</div>
+
+<!-- Informații paginare -->
+<div class="pagination-info">
+    Afișând <strong th:text="${addresses.numberOfElements}"></strong> din
+    <strong th:text="${addresses.totalElements}"></strong> adrese
+    (Pagina <strong th:text="${addresses.number + 1}"></strong> din
+    <strong th:text="${addresses.totalPages}"></strong>)
+</div>
+
+<div class="footer-link">
+    <a href="/">Înapoi la meniu</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista Persoane</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-edit {
+            background-color: #007bff;
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: bold;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .footer-link {
+            margin-top: 20px;
+            display: block;
+        }
+
+        .footer-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .pagination {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .pagination a,
+        .pagination span {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 0 2px;
+            text-decoration: none;
+            border: 1px solid #dee2e6;
+            color: #007bff;
+        }
+
+        .pagination .current {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .pagination .disabled {
+            color: #6c757d;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+
+        .pagination-info {
+            text-align: center;
+            margin: 10px 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .actions {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+<h1>Lista Persoane</h1>
+
+<a href="/persons/new" class="btn">Adaugă Persoană</a>
+
+<table>
+    <thead>
+    <tr>
+        <th>Nume</th>
+        <th>Prenume</th>
+        <th>Email</th>
+        <th>Data Nașterii</th>
+        <th>Acțiuni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="person : ${persons.content}">
+        <td th:text="${person.firstName}"></td>
+        <td th:text="${person.lastName}"></td>
+        <td th:text="${person.email}"></td>
+        <td th:text="${person.birthDate != null ? #temporals.format(person.birthDate, 'dd/MM/yyyy') : 'N/A'}"></td>
+        <td class="actions">
+            <a th:href="@{/persons/{id}/edit(id=${person.id})}" class="btn btn-edit">Editează</a>
+            <form th:action="@{/persons/{id}/delete(id=${person.id})}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('Sigur vrei să ștergi această persoană?')">
+                    Șterge
+                </button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Paginare -->
+<div class="pagination" th:if="${persons.totalPages > 1}">
+    <!-- Prima pagină -->
+    <a th:if="${persons.number > 0}"
+       th:href="@{/persons(page=0, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+        ««
+    </a>
+    <span th:if="${persons.number == 0}" class="disabled">««</span>
+
+    <!-- Pagina anterioară -->
+    <a th:if="${persons.hasPrevious()}"
+       th:href="@{/persons(page=${persons.number - 1}, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+        ‹
+    </a>
+    <span th:if="${!persons.hasPrevious()}" class="disabled">‹</span>
+
+    <!-- Numerele paginilor -->
+    <th:block th:with="startPage=${persons.number > 2 ? persons.number - 2 : 0},
+                           endPage=${persons.number + 2 < persons.totalPages - 1 ? persons.number + 2 : persons.totalPages - 1}">
+
+        <a th:if="${startPage > 0}"
+           th:href="@{/persons(page=0, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}"
+           th:text="1"></a>
+
+        <span th:if="${startPage > 1}">...</span>
+
+        <th:block th:each="i : ${#numbers.sequence(startPage, endPage)}">
+            <a th:if="${i != persons.number}"
+               th:href="@{/persons(page=${i}, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}"
+               th:text="${i + 1}"></a>
+            <span th:if="${i == persons.number}" class="current" th:text="${i + 1}"></span>
+        </th:block>
+
+        <span th:if="${endPage < persons.totalPages - 2}">...</span>
+
+        <a th:if="${endPage < persons.totalPages - 1}"
+           th:href="@{/persons(page=${persons.totalPages - 1}, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}"
+           th:text="${persons.totalPages}"></a>
+    </th:block>
+
+    <!-- Pagina următoare -->
+    <a th:if="${persons.hasNext()}"
+       th:href="@{/persons(page=${persons.number + 1}, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+        ›
+    </a>
+    <span th:if="${!persons.hasNext()}" class="disabled">›</span>
+
+    <!-- Ultima pagină -->
+    <a th:if="${persons.number < persons.totalPages - 1}"
+       th:href="@{/persons(page=${persons.totalPages - 1}, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+        »»
+    </a>
+    <span th:if="${persons.number == persons.totalPages - 1}" class="disabled">»»</span>
+</div>
+
+<!-- Informații paginare -->
+<div class="pagination-info">
+    Afișând <strong th:text="${persons.numberOfElements}"></strong> din
+    <strong th:text="${persons.totalElements}"></strong> persoane
+    (Pagina <strong th:text="${persons.number + 1}"></strong> din
+    <strong th:text="${persons.totalPages}"></strong>)
+</div>
+
+<div class="footer-link">
+    <a href="/">Înapoi la meniu</a>
+</div>
+</body>
+</html>

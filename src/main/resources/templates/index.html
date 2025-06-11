@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sistem de Management AWBD</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .menu-item {
+            background: #007bff;
+            color: white;
+            padding: 20px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .menu-item h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+        }
+
+        .menu-item p {
+            margin: 0;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .logout-section {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: 0px;
+        }
+
+        .btn-logout:hover {
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Sistem de Management AWBD</h1>
+
+    <div class="menu-grid">
+        <a href="/persons" class="menu-item">
+            <h3>Persoane</h3>
+        </a>
+
+        <a href="/companies" class="menu-item">
+            <h3>Companii</h3>
+        </a>
+
+        <a href="/categories" class="menu-item">
+            <h3>Categorii</h3>
+        </a>
+
+        <a href="/products" class="menu-item">
+            <h3>Produse</h3>
+        </a>
+
+        <a href="/orders" class="menu-item">
+            <h3>Comenzi</h3>
+        </a>
+
+        <a href="/addresses" class="menu-item">
+            <h3>Adrese</h3>
+        </a>
+    </div>
+
+    <div class="logout-section">
+        <a href="/h2-console" class="btn-logout" target="_blank">Baza de Date H2</a>
+        <br><br>
+        <form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="btn-logout">Deconectare</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

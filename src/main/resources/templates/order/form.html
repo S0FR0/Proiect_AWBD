@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formular Comandă</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="datetime-local"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .button-group {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h1 th:text="${order.id != null ? 'Editează Comandă' : 'Adaugă Comandă'}"></h1>
+
+    <form th:action="@{/orders}" th:object="${order}" method="post">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="form-group">
+            <label for="orderNumber">Număr Comandă:</label>
+            <input type="text" id="orderNumber" th:field="*{orderNumber}" placeholder="ORD-123456">
+            <div class="error" th:if="${#fields.hasErrors('orderNumber')}" th:errors="*{orderNumber}"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="orderDate">Data Comandă:</label>
+            <input type="datetime-local" id="orderDate" th:field="*{orderDate}">
+            <div class="error" th:if="${#fields.hasErrors('orderDate')}" th:errors="*{orderDate}"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <select id="status" th:field="*{status}">
+                <option value="">Selectează status</option>
+                <option value="PENDING">În așteptare</option>
+                <option value="COMPLETED">Completată</option>
+                <option value="SHIPPED">Expediată</option>
+                <option value="CANCELLED">Anulată</option>
+            </select>
+            <div class="error" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="totalAmount">Suma Totală (RON):</label>
+            <input type="number" step="0.01" id="totalAmount" th:field="*{totalAmount}" placeholder="0.00">
+            <div class="error" th:if="${#fields.hasErrors('totalAmount')}" th:errors="*{totalAmount}"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="customer">Client:</label>
+            <select id="customer" th:field="*{customer}">
+                <option value="">Selectează clientul</option>
+                <option th:each="person : ${persons}"
+                        th:value="${person.id}"
+                        th:text="${person.firstName + ' ' + person.lastName}">
+                </option>
+            </select>
+            <div class="error" th:if="${#fields.hasErrors('customer')}" th:errors="*{customer}"></div>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn">Salvează</button>
+            <a href="/orders" class="btn-cancel">Anulează</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

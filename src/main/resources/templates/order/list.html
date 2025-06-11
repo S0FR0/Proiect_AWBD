@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista Comenzi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-edit {
+            background-color: #007bff;
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: bold;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-pending {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .status-completed {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-shipped {
+            color: #17a2b8;
+            font-weight: bold;
+        }
+
+        .amount {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .footer-link {
+            margin-top: 20px;
+            display: block;
+        }
+
+        .footer-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .actions {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+<h1>Lista Comenzi</h1>
+
+<a href="/orders/new" class="btn">Adaugă Comandă</a>
+
+<table>
+    <thead>
+    <tr>
+        <th>Număr Comandă</th>
+        <th>Data</th>
+        <th>Status</th>
+        <th>Suma Totală</th>
+        <th>Client</th>
+        <th>Acțiuni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders.content}">
+        <td th:text="${order.orderNumber}"></td>
+        <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
+        <td>
+                    <span th:text="${order.status}"
+                          th:class="${'status-' + #strings.toLowerCase(order.status)}">
+                    </span>
+        </td>
+        <td class="amount" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' RON'"></td>
+        <td th:text="${order.customer != null ? order.customer.firstName + ' ' + order.customer.lastName : 'N/A'}"></td>
+        <td class="actions">
+            <a th:href="@{/orders/{id}/edit(id=${order.id})}" class="btn btn-edit">Editează</a>
+            <form th:action="@{/orders/{id}/delete(id=${order.id})}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('Sigur vrei să ștergi această comandă?')">
+                    Șterge
+                </button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="footer-link">
+    <a href="/">Înapoi la meniu</a>
+</div>
+</body>
+</html>

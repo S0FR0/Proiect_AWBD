@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formular Adresă</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .button-group {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h1 th:text="${address.id != null ? 'Editează Adresă' : 'Adaugă Adresă'}"></h1>
+
+    <form th:action="@{/addresses}" th:object="${address}" method="post">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="form-group">
+            <label for="street">Strada:</label>
+            <input type="text" id="street" th:field="*{street}" placeholder="Str. Exemplu nr. 123">
+            <div class="error" th:if="${#fields.hasErrors('street')}" th:errors="*{street}"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="city">Oraș:</label>
+            <input type="text" id="city" th:field="*{city}" placeholder="București">
+            <div class="error" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="postalCode">Cod Poștal:</label>
+            <input type="text" id="postalCode" th:field="*{postalCode}" placeholder="012345">
+            <div class="error" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="country">Țară:</label>
+            <input type="text" id="country" th:field="*{country}" placeholder="România">
+            <div class="error" th:if="${#fields.hasErrors('country')}" th:errors="*{country}"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="person">Persoană:</label>
+            <select id="person" th:field="*{person}">
+                <option value="">Selectează persoana</option>
+                <option th:each="person : ${persons}"
+                        th:value="${person.id}"
+                        th:text="${person.firstName + ' ' + person.lastName}">
+                </option>
+            </select>
+            <div class="error" th:if="${#fields.hasErrors('person')}" th:errors="*{person}"></div>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn">Salvează</button>
+            <a href="/addresses" class="btn-cancel">Anulează</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

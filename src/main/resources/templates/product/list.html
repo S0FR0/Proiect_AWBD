@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista Produse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-edit {
+            background-color: #007bff;
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: bold;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .price {
+            text-align: right;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .stock {
+            text-align: center;
+        }
+
+        .stock.low {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .footer-link {
+            margin-top: 20px;
+            display: block;
+        }
+
+        .footer-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .pagination {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .pagination a,
+        .pagination span {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 0 2px;
+            text-decoration: none;
+            border: 1px solid #dee2e6;
+            color: #007bff;
+        }
+
+        .pagination .current {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .pagination .disabled {
+            color: #6c757d;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+
+        .pagination-info {
+            text-align: center;
+            margin: 10px 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .actions {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+<h1>Lista Produse</h1>
+
+<a href="/products/new" class="btn">Adaugă Produs</a>
+
+<table>
+    <thead>
+    <tr>
+        <th>Nume</th>
+        <th>Descriere</th>
+        <th>Preț</th>
+        <th>Stoc</th>
+        <th>Categorie</th>
+        <th>Acțiuni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product : ${products.content}">
+        <td th:text="${product.name}"></td>
+        <td th:text="${product.description}"></td>
+        <td class="price" th:text="${#numbers.formatDecimal(product.price, 0, 2)} + ' RON'"></td>
+        <td class="stock" th:class="${product.stock < 10 ? 'stock low' : 'stock'}" th:text="${product.stock}"></td>
+        <td th:text="${product.category != null ? product.category.name : 'N/A'}"></td>
+        <td class="actions">
+            <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn btn-edit">Editează</a>
+            <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('Sigur vrei să ștergi acest produs?')">
+                    Șterge
+                </button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Paginare -->
+<div class="pagination" th:if="${products.totalPages > 1}">
+    <!-- Prima pagină -->
+    <a th:if="${products.number > 0}"
+       th:href="@{/products(page=0, size=${products.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+        ««
+    </a>
+    <span th:if="${products.number == 0}" class="disabled">««</span>
+
+    <!-- Pagina anterioară -->
+    <a th:if="${products.hasPrevious()}"
+       th:href="@{/products(page=${products.number - 1}, size=${products.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+        ‹
+    </a>
+    <span th:if="${!products.hasPrevious()}" class="disabled">‹</span>
+
+    <!-- Numerele paginilor -->
+    <th:block th:with="startPage=${products.number > 2 ? products.number - 2 : 0},
+                           endPage=${products.number + 2 < products.totalPages - 1 ? products.number + 2 : products.totalPages - 1}">
+
+        <a th:if="${startPage > 0}"
+           th:href="@{/products(page=0, size=${products.size}, sortBy=${sortBy}, sortDir=${sortDir})}"
+           th:text="1"></a>
+
+        <span th:if="${startPage > 1}">...</span>
+
+        <th:block th:each="i : ${#numbers.sequence(startPage, endPage)}">
+            <a th:if="${i != products.number}"
+               th:href="@{/products(page=${i}, size=${products.size}, sortBy=${sortBy}, sortDir=${sortDir})}"
+               th:text="${i + 1}"></a>
+            <span th:if="${i == products.number}" class="current" th:text="${i + 1}"></span>
+        </th:block>
+
+        <span th:if="${endPage < products.totalPages - 2}">...</span>
+
+        <a th:if="${endPage < products.totalPages - 1}"
+           th:href="@{/products(page=${products.totalPages - 1}, size=${products.size}, sortBy=${sortBy}, sortDir=${sortDir})}"
+           th:text="${products.totalPages}"></a>
+    </th:block>
+
+    <!-- Pagina următoare -->
+    <a th:if="${products.hasNext()}"
+       th:href="@{/products(page=${products.number + 1}, size=${products.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+        ›
+    </a>
+    <span th:if="${!products.hasNext()}" class="disabled">›</span>
+
+    <!-- Ultima pagină -->
+    <a th:if="${products.number < products.totalPages - 1}"
+       th:href="@{/products(page=${products.totalPages - 1}, size=${products.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+        »»
+    </a>
+    <span th:if="${products.number == products.totalPages - 1}" class="disabled">»»</span>
+</div>
+
+<!-- Informații paginare -->
+<div class="pagination-info">
+    Afișând <strong th:text="${products.numberOfElements}"></strong> din
+    <strong th:text="${products.totalElements}"></strong> produse
+    (Pagina <strong th:text="${products.number + 1}"></strong> din
+    <strong th:text="${products.totalPages}"></strong>)
+</div>
+
+<div class="footer-link">
+    <a href="/">Înapoi la meniu</a>
+</div>
+</body>
+</html>
