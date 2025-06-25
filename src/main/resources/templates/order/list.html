@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ro">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista Comenzi</title>
     <style>
         body {
@@ -20,10 +22,16 @@
             padding: 8px 16px;
             text-decoration: none;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
             margin-bottom: 20px;
             display: inline-block;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
         }
 
         .btn-danger {
@@ -32,11 +40,26 @@
             font-size: 12px;
         }
 
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
         .btn-edit {
             background-color: #007bff;
             padding: 6px 12px;
             font-size: 12px;
             margin-right: 5px;
+        }
+
+        .btn-edit:hover {
+            background-color: #0056b3;
+        }
+
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
         }
 
         table {
@@ -63,24 +86,22 @@
             border-bottom: none;
         }
 
-        .status-pending {
-            color: #ffc107;
-            font-weight: bold;
+        tr:hover {
+            background-color: #f8f9fa;
         }
 
-        .status-completed {
-            color: #28a745;
+        .status-badge {
             font-weight: bold;
-        }
-
-        .status-shipped {
-            color: #17a2b8;
-            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-transform: uppercase;
         }
 
         .amount {
             text-align: right;
             font-weight: bold;
+            color: #28a745;
         }
 
         .footer-link {
@@ -91,10 +112,41 @@
         .footer-link a {
             color: #007bff;
             text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-link a:hover {
+            text-decoration: underline;
         }
 
         .actions {
             white-space: nowrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                margin: 10px;
+            }
+
+            .table-container {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            .btn {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
         }
     </style>
 </head>
@@ -103,40 +155,52 @@
 
 <a href="/orders/new" class="btn">Adauga Comanda</a>
 
-<table>
-    <thead>
-    <tr>
-        <th>Numar Comanda</th>
-        <th>Data</th>
-        <th>Status</th>
-        <th>Suma Totala</th>
-        <th>Client</th>
-        <th>Actiuni</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="order : ${orders.content}">
-        <td th:text="${order.orderNumber}"></td>
-        <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
-        <td>
-                    <span th:text="${order.status}"
-                          th:class="${'status-' + #strings.toLowerCase(order.status)}">
-                    </span>
-        </td>
-        <td class="amount" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' RON'"></td>
-        <td th:text="${order.customer != null ? order.customer.firstName + ' ' + order.customer.lastName : 'N/A'}"></td>
-        <td class="actions">
-            <a th:href="@{/orders/{id}/edit(id=${order.id})}" class="btn btn-edit">Editeaza</a>
-            <form th:action="@{/orders/{id}/delete(id=${order.id})}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-danger"
-                        onclick="return confirm('Sigur vrei sa stergi aceasta comanda?')">
-                    Sterge
-                </button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div class="table-container">
+    <table>
+        <thead>
+        <tr>
+            <th>Numar Comanda</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Suma Totala</th>
+            <th>Client</th>
+            <th>Actiuni</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders.content}" th:if="${not #lists.isEmpty(orders.content)}">
+            <td th:text="${order.orderNumber}"></td>
+            <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
+            <td>
+                <span th:text="${order.status}"
+                      class="status-badge"
+                      th:style="${order.status == 'PENDING' ? 'color: #856404; background-color: #fff3cd;' :
+                                (order.status == 'COMPLETED' ? 'color: #155724; background-color: #d4edda;' :
+                                (order.status == 'SHIPPED' ? 'color: #0c5460; background-color: #d1ecf1;' :
+                                (order.status == 'CANCELLED' ? 'color: #721c24; background-color: #f8d7da;' :
+                                'color: #495057; background-color: #e9ecef;')))}">
+                </span>
+            </td>
+            <td class="amount" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' RON'"></td>
+            <td th:text="${order.customer != null ? order.customer.firstName + ' ' + order.customer.lastName : 'N/A'}"></td>
+            <td class="actions">
+                <a th:href="@{/orders/{id}/edit(id=${order.id})}" class="btn btn-edit">Editeaza</a>
+                <form th:action="@{/orders/{id}/delete(id=${order.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Sigur vrei sa stergi aceasta comanda?')">
+                        Sterge
+                    </button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(orders.content)}">
+            <td colspan="6" class="empty-state">
+                Nu exista comenzi inregistrate.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 <div class="footer-link">
     <a href="/">Inapoi la meniu</a>
