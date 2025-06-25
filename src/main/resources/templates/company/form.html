@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
 <head>
     <title>Formular Companie</title>
     <style>
@@ -83,7 +83,7 @@
 </head>
 <body>
 <div class="form-container">
-    <h1 th:text="${company.id != null ? 'Editează Companie' : 'Adaugă Companie'}"></h1>
+    <h1 th:text="${company.id != null ? 'Editeaza Companie' : 'Adauga Companie'}"></h1>
 
     <form th:action="@{/companies}" th:object="${company}" method="post">
         <input type="hidden" th:field="*{id}">
@@ -95,7 +95,7 @@
         </div>
 
         <div class="form-group">
-            <label for="address">Adresă:</label>
+            <label for="address">Adresa:</label>
             <textarea id="address" th:field="*{address}" placeholder="Introduceti adresa companiei"></textarea>
             <div class="error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
         </div>
@@ -113,8 +113,8 @@
         </div>
 
         <div class="button-group">
-            <button type="submit" class="btn">Salvează</button>
-            <a href="/companies" class="btn-cancel">Anulează</a>
+            <button type="submit" class="btn">Salveaza</button>
+            <a href="/companies" class="btn-cancel">Anuleaza</a>
         </div>
     </form>
 </div>

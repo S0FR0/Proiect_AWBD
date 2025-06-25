@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
 <head>
     <title>Lista Persoane</title>
     <style>
@@ -115,7 +115,7 @@
 <body>
 <h1>Lista Persoane</h1>
 
-<a href="/persons/new" class="btn">Adaugă Persoană</a>
+<a href="/persons/new" class="btn">Adauga Persoana</a>
 
 <table>
     <thead>
@@ -123,8 +123,8 @@
         <th>Nume</th>
         <th>Prenume</th>
         <th>Email</th>
-        <th>Data Nașterii</th>
-        <th>Acțiuni</th>
+        <th>Data Nasterii</th>
+        <th>Actiuni</th>
     </tr>
     </thead>
     <tbody>
@@ -134,11 +134,11 @@
         <td th:text="${person.email}"></td>
         <td th:text="${person.birthDate != null ? #temporals.format(person.birthDate, 'dd/MM/yyyy') : 'N/A'}"></td>
         <td class="actions">
-            <a th:href="@{/persons/{id}/edit(id=${person.id})}" class="btn btn-edit">Editează</a>
+            <a th:href="@{/persons/{id}/edit(id=${person.id})}" class="btn btn-edit">Editeaza</a>
             <form th:action="@{/persons/{id}/delete(id=${person.id})}" method="post" style="display:inline;">
                 <button type="submit" class="btn btn-danger"
-                        onclick="return confirm('Sigur vrei să ștergi această persoană?')">
-                    Șterge
+                        onclick="return confirm('Sigur vrei sa stergi aceasta persoana?')">
+                    Sterge
                 </button>
             </form>
         </td>
@@ -148,14 +148,14 @@
 
 <!-- Paginare -->
 <div class="pagination" th:if="${persons.totalPages > 1}">
-    <!-- Prima pagină -->
+    <!-- Prima pagina -->
     <a th:if="${persons.number > 0}"
        th:href="@{/persons(page=0, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
         ««
     </a>
     <span th:if="${persons.number == 0}" class="disabled">««</span>
 
-    <!-- Pagina anterioară -->
+    <!-- Pagina anterioara -->
     <a th:if="${persons.hasPrevious()}"
        th:href="@{/persons(page=${persons.number - 1}, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
         ‹
@@ -186,14 +186,14 @@
            th:text="${persons.totalPages}"></a>
     </th:block>
 
-    <!-- Pagina următoare -->
+    <!-- Pagina urmatoare -->
     <a th:if="${persons.hasNext()}"
        th:href="@{/persons(page=${persons.number + 1}, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
         ›
     </a>
     <span th:if="${!persons.hasNext()}" class="disabled">›</span>
 
-    <!-- Ultima pagină -->
+    <!-- Ultima pagina -->
     <a th:if="${persons.number < persons.totalPages - 1}"
        th:href="@{/persons(page=${persons.totalPages - 1}, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
         »»
@@ -201,16 +201,16 @@
     <span th:if="${persons.number == persons.totalPages - 1}" class="disabled">»»</span>
 </div>
 
-<!-- Informații paginare -->
+<!-- Informatii paginare -->
 <div class="pagination-info">
-    Afișând <strong th:text="${persons.numberOfElements}"></strong> din
+    Afisand <strong th:text="${persons.numberOfElements}"></strong> din
     <strong th:text="${persons.totalElements}"></strong> persoane
     (Pagina <strong th:text="${persons.number + 1}"></strong> din
     <strong th:text="${persons.totalPages}"></strong>)
 </div>
 
 <div class="footer-link">
-    <a href="/">Înapoi la meniu</a>
+    <a href="/">Inapoi la meniu</a>
 </div>
 </body>
 </html>

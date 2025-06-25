@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
 <head>
     <title>Lista Categorii</title>
     <style>
@@ -115,14 +115,14 @@
 <body>
 <h1>Lista Categorii</h1>
 
-<a href="/categories/new" class="btn">Adaugă Categorie</a>
+<a href="/categories/new" class="btn">Adauga Categorie</a>
 
 <table>
     <thead>
     <tr>
         <th>Nume</th>
         <th>Descriere</th>
-        <th>Acțiuni</th>
+        <th>Actiuni</th>
     </tr>
     </thead>
     <tbody>
@@ -130,11 +130,11 @@
         <td th:text="${category.name}"></td>
         <td th:text="${category.description}"></td>
         <td class="actions">
-            <a th:href="@{/categories/{id}/edit(id=${category.id})}" class="btn btn-edit">Editează</a>
+            <a th:href="@{/categories/{id}/edit(id=${category.id})}" class="btn btn-edit">Editeaza</a>
             <form th:action="@{/categories/{id}/delete(id=${category.id})}" method="post" style="display:inline;">
                 <button type="submit" class="btn btn-danger"
-                        onclick="return confirm('Sigur vrei să ștergi această categorie?')">
-                    Șterge
+                        onclick="return confirm('Sigur vrei sa stergi aceasta categorie?')">
+                    Sterge
                 </button>
             </form>
         </td>
@@ -144,14 +144,14 @@
 
 <!-- Paginare -->
 <div class="pagination" th:if="${categories.totalPages > 1}">
-    <!-- Prima pagină -->
+    <!-- Prima pagina -->
     <a th:if="${categories.number > 0}"
        th:href="@{/categories(page=0, size=${categories.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
         ««
     </a>
     <span th:if="${categories.number == 0}" class="disabled">««</span>
 
-    <!-- Pagina anterioară -->
+    <!-- Pagina anterioara -->
     <a th:if="${categories.hasPrevious()}"
        th:href="@{/categories(page=${categories.number - 1}, size=${categories.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
         ‹
@@ -182,14 +182,14 @@
            th:text="${categories.totalPages}"></a>
     </th:block>
 
-    <!-- Pagina următoare -->
+    <!-- Pagina urmatoare -->
     <a th:if="${categories.hasNext()}"
        th:href="@{/categories(page=${categories.number + 1}, size=${categories.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
         ›
     </a>
     <span th:if="${!categories.hasNext()}" class="disabled">›</span>
 
-    <!-- Ultima pagină -->
+    <!-- Ultima pagina -->
     <a th:if="${categories.number < categories.totalPages - 1}"
        th:href="@{/categories(page=${categories.totalPages - 1}, size=${categories.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
         »»
@@ -197,16 +197,16 @@
     <span th:if="${categories.number == categories.totalPages - 1}" class="disabled">»»</span>
 </div>
 
-<!-- Informații paginare -->
+<!-- Informatii paginare -->
 <div class="pagination-info">
-    Afișând <strong th:text="${categories.numberOfElements}"></strong> din
+    Afisand <strong th:text="${categories.numberOfElements}"></strong> din
     <strong th:text="${categories.totalElements}"></strong> categorii
     (Pagina <strong th:text="${categories.number + 1}"></strong> din
     <strong th:text="${categories.totalPages}"></strong>)
 </div>
 
 <div class="footer-link">
-    <a href="/">Înapoi la meniu</a>
+    <a href="/">Inapoi la meniu</a>
 </div>
 </body>
 </html>

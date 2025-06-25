@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
 <head>
     <title>Formular Categorie</title>
     <style>
@@ -82,7 +82,7 @@
 </head>
 <body>
 <div class="form-container">
-    <h1 th:text="${category.id != null ? 'Editează Categorie' : 'Adaugă Categorie'}"></h1>
+    <h1 th:text="${category.id != null ? 'Editeaza Categorie' : 'Adauga Categorie'}"></h1>
 
     <form th:action="@{/categories}" th:object="${category}" method="post">
         <input type="hidden" th:field="*{id}">
@@ -100,8 +100,8 @@
         </div>
 
         <div class="button-group">
-            <button type="submit" class="btn">Salvează</button>
-            <a href="/categories" class="btn-cancel">Anulează</a>
+            <button type="submit" class="btn">Salveaza</button>
+            <a href="/categories" class="btn-cancel">Anuleaza</a>
         </div>
     </form>
 </div>

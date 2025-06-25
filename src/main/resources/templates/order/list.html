@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
 <head>
     <title>Lista Comenzi</title>
     <style>
@@ -101,17 +101,17 @@
 <body>
 <h1>Lista Comenzi</h1>
 
-<a href="/orders/new" class="btn">Adaugă Comandă</a>
+<a href="/orders/new" class="btn">Adauga Comanda</a>
 
 <table>
     <thead>
     <tr>
-        <th>Număr Comandă</th>
+        <th>Numar Comanda</th>
         <th>Data</th>
         <th>Status</th>
-        <th>Suma Totală</th>
+        <th>Suma Totala</th>
         <th>Client</th>
-        <th>Acțiuni</th>
+        <th>Actiuni</th>
     </tr>
     </thead>
     <tbody>
@@ -126,11 +126,11 @@
         <td class="amount" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' RON'"></td>
         <td th:text="${order.customer != null ? order.customer.firstName + ' ' + order.customer.lastName : 'N/A'}"></td>
         <td class="actions">
-            <a th:href="@{/orders/{id}/edit(id=${order.id})}" class="btn btn-edit">Editează</a>
+            <a th:href="@{/orders/{id}/edit(id=${order.id})}" class="btn btn-edit">Editeaza</a>
             <form th:action="@{/orders/{id}/delete(id=${order.id})}" method="post" style="display:inline;">
                 <button type="submit" class="btn btn-danger"
-                        onclick="return confirm('Sigur vrei să ștergi această comandă?')">
-                    Șterge
+                        onclick="return confirm('Sigur vrei sa stergi aceasta comanda?')">
+                    Sterge
                 </button>
             </form>
         </td>
@@ -139,7 +139,7 @@
 </table>
 
 <div class="footer-link">
-    <a href="/">Înapoi la meniu</a>
+    <a href="/">Inapoi la meniu</a>
 </div>
 </body>
 </html>
