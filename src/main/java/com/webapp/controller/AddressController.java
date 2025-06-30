@@ -53,7 +53,6 @@ public class AddressController {
     public String showCreateForm(Model model) {
         model.addAttribute("address", new Address());
 
-        // Încarcă toate persoanele pentru dropdown
         List<Person> persons = personService.findAll();
         model.addAttribute("persons", persons);
 
@@ -66,7 +65,6 @@ public class AddressController {
         if (address.isPresent()) {
             model.addAttribute("address", address.get());
 
-            // Încarcă toate persoanele pentru dropdown
             List<Person> persons = personService.findAll();
             model.addAttribute("persons", persons);
 
@@ -78,7 +76,6 @@ public class AddressController {
     @PostMapping
     public String save(@Valid @ModelAttribute Address address, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            // Reîncarcă persoanele pentru dropdown în caz de eroare
             List<Person> persons = personService.findAll();
             model.addAttribute("persons", persons);
             return "address/form";

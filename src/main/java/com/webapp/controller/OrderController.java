@@ -53,12 +53,10 @@ public class OrderController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         Order order = new Order();
-        // Setează data curentă ca default
         order.setOrderDate(LocalDateTime.now());
 
         model.addAttribute("order", order);
 
-        // Încarcă toate persoanele pentru dropdown
         List<Person> persons = personService.findAll();
         model.addAttribute("persons", persons);
 
@@ -71,7 +69,6 @@ public class OrderController {
         if (order.isPresent()) {
             model.addAttribute("order", order.get());
 
-            // Încarcă toate persoanele pentru dropdown
             List<Person> persons = personService.findAll();
             model.addAttribute("persons", persons);
 
@@ -83,13 +80,11 @@ public class OrderController {
     @PostMapping
     public String save(@Valid @ModelAttribute Order order, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            // Reîncarcă persoanele pentru dropdown în caz de eroare
             List<Person> persons = personService.findAll();
             model.addAttribute("persons", persons);
             return "order/form";
         }
 
-        // Generează numărul comenzii dacă e nouă
         if (order.getId() == null && (order.getOrderNumber() == null || order.getOrderNumber().isEmpty())) {
             order.setOrderNumber(generateOrderNumber());
         }
@@ -104,7 +99,6 @@ public class OrderController {
         return "redirect:/orders";
     }
 
-    // Metoda pentru generarea numărului comenzii
     private String generateOrderNumber() {
         return "ORD-" + System.currentTimeMillis();
     }

@@ -146,23 +146,19 @@
     </tbody>
 </table>
 
-<!-- Paginare -->
 <div class="pagination" th:if="${persons.totalPages > 1}">
-    <!-- Prima pagina -->
     <a th:if="${persons.number > 0}"
        th:href="@{/persons(page=0, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
         ««
     </a>
     <span th:if="${persons.number == 0}" class="disabled">««</span>
 
-    <!-- Pagina anterioara -->
     <a th:if="${persons.hasPrevious()}"
        th:href="@{/persons(page=${persons.number - 1}, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
         ‹
     </a>
     <span th:if="${!persons.hasPrevious()}" class="disabled">‹</span>
 
-    <!-- Numerele paginilor -->
     <th:block th:with="startPage=${persons.number > 2 ? persons.number - 2 : 0},
                            endPage=${persons.number + 2 < persons.totalPages - 1 ? persons.number + 2 : persons.totalPages - 1}">
 
@@ -193,7 +189,6 @@
     </a>
     <span th:if="${!persons.hasNext()}" class="disabled">›</span>
 
-    <!-- Ultima pagina -->
     <a th:if="${persons.number < persons.totalPages - 1}"
        th:href="@{/persons(page=${persons.totalPages - 1}, size=${persons.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
         »»
@@ -201,7 +196,6 @@
     <span th:if="${persons.number == persons.totalPages - 1}" class="disabled">»»</span>
 </div>
 
-<!-- Informatii paginare -->
 <div class="pagination-info">
     Afisand <strong th:text="${persons.numberOfElements}"></strong> din
     <strong th:text="${persons.totalElements}"></strong> persoane

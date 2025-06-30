@@ -53,7 +53,6 @@ public class ProductController {
     public String showCreateForm(Model model) {
         model.addAttribute("product", new Product());
 
-        // Încarcă toate categoriile pentru dropdown
         List<Category> categories = categoryService.findAll();
         model.addAttribute("categories", categories);
 
@@ -66,7 +65,6 @@ public class ProductController {
         if (product.isPresent()) {
             model.addAttribute("product", product.get());
 
-            // Încarcă toate categoriile pentru dropdown
             List<Category> categories = categoryService.findAll();
             model.addAttribute("categories", categories);
 
@@ -78,10 +76,9 @@ public class ProductController {
     @PostMapping
     public String save(@Valid @ModelAttribute Product product, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            // Reîncarcă categoriile pentru dropdown în caz de eroare
             List<Category> categories = categoryService.findAll();
             model.addAttribute("categories", categories);
-            return "products/form";
+            return "product/form";
         }
         productService.save(product);
         return "redirect:/products";
